@@ -19,7 +19,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./environments/${{ inputs.environment }}
+        working-directory: environments/${{ inputs.environment }}
 
     steps:
       - run: pwd
