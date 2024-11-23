@@ -19,17 +19,19 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./environments/${{ inputs.environment }}
+        working-directory: environments/${{ inputs.environment }}
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - run: pwd
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: '${{ secrets.AWS_INFRA_ADMIN_DEV_KEY }}'
-          aws-secret-access-key: '${{ secrets.AWS_INFRA_ADMIN_DEV_SECRET }}'
+          aws-access-key-id: ${{ secrets.AWS_INFRA_ADMIN_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_INFRA_ADMIN_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Set up Terraform

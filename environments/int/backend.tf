@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
     bucket = "voyageur-tfstate"
-    key     = "${var.environment}/terraform.tfstate"
-    region  = var.region
+    key     = "int/terraform.tfstate"
+    region  = "us-east-1"
     encrypt = true
   }
 }
