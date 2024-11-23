@@ -22,10 +22,10 @@ jobs:
         working-directory: environments/${{ inputs.environment }}
 
     steps:
-      - run: pwd
-
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - run: pwd
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
