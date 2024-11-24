@@ -17,4 +17,6 @@ resource "aws_cognito_user_pool" "user_pool" {
   }
 
   auto_verified_attributes = ["email"]
+
+  alias_attributes = ["email"]
 }
