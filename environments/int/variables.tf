@@ -8,7 +8,7 @@ variable "environment" {
   type        = string
 }
 
-variable "ecr_alias" {
-  description = "The alias for the ECR repository"
+variable "registry" {
+  description = "The registry for the ECR repository"
   type        = string
 }

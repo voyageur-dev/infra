@@ -6,7 +6,7 @@ module "cognito" {
 module "user-service" {
   source = "../../modules/functions"
   environment = var.environment
-  ecr_alias    = var.ecr_alias
+  registry    = var.registry
   service_name = "user-service"
   role_arn = module.user-service-role.role_arn
 }
