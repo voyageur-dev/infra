@@ -7,13 +7,3 @@ variable "environment" {
   description = "The environment name (int / prod)"
   type        = string
 }
-
-variable "ecr_alias" {
-  description = "The alias for the ECR repository"
-  type        = string
-}
-
-variable "role_arn" {
-  description = "The ARN of the role to assume"
-  type        = string
-}
