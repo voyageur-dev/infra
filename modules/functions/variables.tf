@@ -1,5 +1,5 @@
-variable "region" {
-  description = "The AWS region"
+variable "service_name" {
+  description = "The repository for which service"
   type        = string
 }
 
