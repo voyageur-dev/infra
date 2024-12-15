@@ -1,5 +1,5 @@
-resource "aws_ecrpublic_repository" "public_repository" {
-  repository_name = "${var.service_name}-${var.environment}"
+resource "aws_ecr_repository" "public_repository" {
+  name = "${var.service_name}-${var.environment}"
 
   tags = {
     Name  = var.service_name
