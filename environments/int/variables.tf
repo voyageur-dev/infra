@@ -14,6 +14,6 @@ variable "user_service_environment_variables" {
   description = "Environment variables for Lambda function"
   type        = map(string)
   default     = {
-    COGNITO_USER_POOL_ID = "us-east-1_BL4RLmsOa"
+    USER_POOL_ID = "us-east-1_BL4RLmsOa"
   }
 }
