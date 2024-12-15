@@ -8,11 +8,6 @@ variable "environment" {
   type        = string
 }
 
-variable "registry" {
-  description = "The registry for the ECR repository"
-  type        = string
-}
-
 variable "role_arn" {
   description = "The ARN of the role to assume"
   type        = string

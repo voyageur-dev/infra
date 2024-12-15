@@ -1,5 +1,9 @@
+data "aws_ecr_repository" "function_repository" {
+  name = "${var.service_name}-${var.environment}"
+}
+
 resource "aws_lambda_function" "function" {
-  image_uri       = "${var.registry}/${var.service_name}-${var.environment}:latest"
+  image_uri       = "${data.aws_ecr_repository.function_repository.repository_url}:latest"
   function_name   = "${var.service_name}-${var.environment}"
   role = var.role_arn
   package_type    = "Image"
