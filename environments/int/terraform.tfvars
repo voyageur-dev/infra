@@ -1,3 +1,5 @@
 region = "us-east-1"
 environment = "int"
-registry = "public.ecr.aws/w3e5l9o0"
+user_service_environment_variables = {
+  COGNITO_USER_POOL_ID = module.cognito.user_pool_id
+}

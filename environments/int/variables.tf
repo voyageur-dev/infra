@@ -8,7 +8,7 @@ variable "environment" {
   type        = string
 }
 
-variable "registry" {
-  description = "The registry for the ECR repository"
-  type        = string
+variable "user_service_environment_variables" {
+  description = "Environment variables for Lambda function"
+  type        = map(string)
 }
