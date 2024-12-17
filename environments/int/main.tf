@@ -26,7 +26,7 @@ module "user-service-role" {
 module "user-service-integration" {
   source = "../../modules/integration"
   api_gateway_id = module.api-gateway.api_gateway_id
-  integration_uri = module.user-service.arn
+  integration_uri = module.user-service.invoke_arn
 }
 
 module "route" {
