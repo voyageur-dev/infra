@@ -14,7 +14,7 @@ variable "user_service_environment_variables" {
   description = "Environment variables for Lambda function"
   type        = map(string)
   default     = {
-    USER_POOL_ID = module.cognito.user_pool_id,
-    CLIENT_ID    = module.cognito.client_id
+    USER_POOL_ID = "us-east-1_BL4RLmsOa",
+    CLIENT_ID    = "5dufjae7m9t3v04tausdrs3pl7"
   }
 }
