@@ -43,6 +43,11 @@ module "route" {
       target = module.user-service-integration.integration_id
       path = "/users"
       method = "POST"
+    },
+    "userservice.signIn" = {
+      target = module.user-service-integration.integration_id
+      path = "/users/signIn"
+      method = "POST"
     }
   }
 }
