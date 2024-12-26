@@ -51,3 +51,22 @@ module "route" {
     }
   }
 }
+
+module "subscriptions_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "subscriptions-table-${var.environment}"
+  hash_key = "id"
+
+  attributes = [
+    {
+      name = "id"
+      type = "N"
+    }
+  ]
+
+  tags = {
+    Name = "subscription-service"
+    Environment = var.environment
+  }
+}
