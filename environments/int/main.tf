@@ -61,7 +61,7 @@ module "subscriptions_table" {
   attributes = [
     {
       name = "id"
-      type = "N"
+      type = "S"
     }
   ]
 
