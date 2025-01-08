@@ -14,7 +14,10 @@ module "user-service" {
   environment = var.environment
   service_name = "user-service"
   role_arn = module.user-service-role.role_arn
-  environment_variables = var.user_service_environment_variables
+  environment_variables = {
+    USER_POOL_ID = module.cognito.user_pool_id,
+    CLIENT_ID    = module.cognito.client_id
+  }
 }
 
 module "user-service-role" {
