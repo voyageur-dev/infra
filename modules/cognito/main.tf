@@ -16,9 +16,9 @@ resource "aws_cognito_user_pool" "user_pool" {
     }
   }
 
-  auto_verified_attributes = ["email"]
+  username_attributes      = ["email"]
 
-  alias_attributes = ["email"]
+  auto_verified_attributes = ["email"]
 
   tags = {
     Environment = var.environment
