@@ -42,9 +42,19 @@ module "route" {
       path = "/users/{username}"
       method = "GET"
     },
-    "userservice.createUser" = {
+    "userservice.signUp" = {
       target = module.user-service-integration.integration_id
       path = "/users"
+      method = "POST"
+    },
+    "userservice.confirmSignUp" = {
+      target = module.user-service-integration.integration_id
+      path = "/users/code"
+      method = "POST"
+    },
+    "userservice.resendCode" = {
+      target = module.user-service-integration.integration_id
+      path = "/users/resend"
       method = "POST"
     },
     "userservice.signIn" = {
