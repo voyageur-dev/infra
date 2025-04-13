@@ -112,7 +112,7 @@ module "rb_exam_question_images_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
   bucket = "rb-exam-question-images-${var.environment}"
-  acl    = "private"
+  acl    = "public-read"
 
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
