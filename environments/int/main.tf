@@ -111,7 +111,7 @@ module "rb_exam_questions_table" {
 module "rb_exam_question_images_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
-  bucket = "rb_exam_question_images"
+  bucket = "rb-exam-question-images-${var.environment}"
   acl    = "private"
 
   control_object_ownership = true
