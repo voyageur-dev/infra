@@ -114,17 +114,13 @@ module "rb_exam_question_images_bucket" {
   bucket = "rb-exam-question-images-${var.environment}"
   acl    = "public-read"
 
-  control_object_ownership = true
-  object_ownership         = "ObjectWriter"
-
-  versioning = {
-    enabled = false
-  }
-
   block_public_acls       = false
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
 
   tags = {
     Name = "rb-service"
