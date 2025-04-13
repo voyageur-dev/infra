@@ -107,3 +107,18 @@ module "rb_exam_questions_table" {
     Environment = var.environment
   }
 }
+
+module "rb_exam_question_images_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  bucket = "rb_exam_question_images"
+  acl    = "private"
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
+
+  tags = {
+    Name = "rb-service"
+    Environment = var.environment
+  }
+}
