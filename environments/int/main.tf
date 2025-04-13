@@ -117,6 +117,10 @@ module "rb_exam_question_images_bucket" {
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
 
+  versioning = {
+    enabled = false
+  }
+
   tags = {
     Name = "rb-service"
     Environment = var.environment
