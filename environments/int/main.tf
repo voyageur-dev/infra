@@ -83,3 +83,27 @@ module "subscriptions_table" {
     Environment = var.environment
   }
 }
+
+module "rb_exam_questions_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "rb-exam-questions-${var.environment}"
+  hash_key = "exam_id"
+  range_key = "question_id"
+
+  attributes = [
+    {
+      name = "exam_id"
+      type = "S"
+    },
+    {
+      name = "question_id"
+      type = "S"
+    }
+  ]
+
+  tags = {
+    Name = "rb-service"
+    Environment = var.environment
+  }
+}
