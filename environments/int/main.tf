@@ -98,7 +98,7 @@ module "rb_exam_questions_table" {
     },
     {
       name = "question_id"
-      type = "S"
+      type = "N"
     }
   ]
 
