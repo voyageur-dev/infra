@@ -121,6 +121,11 @@ module "rb_exam_question_images_bucket" {
     enabled = false
   }
 
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+
   tags = {
     Name = "rb-service"
     Environment = var.environment
