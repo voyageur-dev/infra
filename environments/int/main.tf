@@ -78,6 +78,10 @@ module "subscriptions_table" {
     }
   ]
 
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
+
   tags = {
     Name = "subscription-service"
     Environment = var.environment
@@ -101,6 +105,10 @@ module "rb_exam_questions_table" {
       type = "N"
     }
   ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
 
   tags = {
     Name = "rb-service"
