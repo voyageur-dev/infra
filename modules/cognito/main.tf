@@ -16,11 +16,28 @@ resource "aws_cognito_user_pool" "user_pool" {
     }
   }
 
-  auto_verified_attributes = ["email"]
+  username_attributes      = ["email"]
 
-  alias_attributes = ["email"]
+  auto_verified_attributes = ["email"]
 
   tags = {
     Environment = var.environment
   }
+}
+
+resource "aws_cognito_user_pool_client" "client" {
+  name = "client-${var.environment}"
+  user_pool_id = aws_cognito_user_pool.user_pool.id
+
+  explicit_auth_flows = [
+    "ADMIN_NO_SRP_AUTH",
+    "USER_PASSWORD_AUTH"
+  ]
+
+  generate_secret = false
+
+  # Prevent user existence errors
+  prevent_user_existence_errors = "ENABLED"
+
+  enable_token_revocation = true
 }

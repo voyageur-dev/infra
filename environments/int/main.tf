@@ -14,7 +14,10 @@ module "user-service" {
   environment = var.environment
   service_name = "user-service"
   role_arn = module.user-service-role.role_arn
-  environment_variables = var.user_service_environment_variables
+  environment_variables = {
+    USER_POOL_ID = module.cognito.user_pool_id,
+    CLIENT_ID    = module.cognito.client_id
+  }
 }
 
 module "user-service-role" {
@@ -39,10 +42,96 @@ module "route" {
       path = "/users/{username}"
       method = "GET"
     },
-    "userservice.createUser" = {
+    "userservice.signUp" = {
       target = module.user-service-integration.integration_id
       path = "/users"
       method = "POST"
+    },
+    "userservice.confirmSignUp" = {
+      target = module.user-service-integration.integration_id
+      path = "/users/code"
+      method = "POST"
+    },
+    "userservice.resendCode" = {
+      target = module.user-service-integration.integration_id
+      path = "/users/resend"
+      method = "POST"
+    },
+    "userservice.signIn" = {
+      target = module.user-service-integration.integration_id
+      path = "/users/signIn"
+      method = "POST"
     }
+  }
+}
+
+module "subscriptions_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "subscriptions-table-${var.environment}"
+  hash_key = "id"
+
+  attributes = [
+    {
+      name = "id"
+      type = "S"
+    }
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
+
+  tags = {
+    Name = "subscription-service"
+    Environment = var.environment
+  }
+}
+
+module "rb_exam_questions_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "rb-exam-questions-${var.environment}"
+  hash_key = "exam_id"
+  range_key = "question_id"
+
+  attributes = [
+    {
+      name = "exam_id"
+      type = "S"
+    },
+    {
+      name = "question_id"
+      type = "N"
+    }
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
+
+  tags = {
+    Name = "rb-service"
+    Environment = var.environment
+  }
+}
+
+module "rb_exam_question_images_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  bucket = "rb-exam-question-images-${var.environment}"
+  acl    = "private"
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
+
+  tags = {
+    Name = "rb-service"
+    Environment = var.environment
   }
 }

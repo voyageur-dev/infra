@@ -9,11 +9,3 @@ variable "environment" {
   type        = string
   default     = "int"
 }
-
-variable "user_service_environment_variables" {
-  description = "Environment variables for Lambda function"
-  type        = map(string)
-  default     = {
-    USER_POOL_ID = "us-east-1_BL4RLmsOa"
-  }
-}
