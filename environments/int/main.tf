@@ -3,6 +3,20 @@ module "cognito" {
   environment        = var.environment
 }
 
+module "codebase_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  bucket = "codebase-${var.environment}"
+  acl    = "private"
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
 module "api-gateway" {
   source = "../../modules/api-gateway"
   environment = var.environment
