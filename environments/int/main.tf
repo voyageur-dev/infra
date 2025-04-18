@@ -120,7 +120,7 @@ module "rb_exam_question_images_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
   bucket = "rb-exam-question-images-${var.environment}"
-  acl    = "public-read"
+  acl    = "private"
 
   block_public_acls       = false
   block_public_policy     = false
