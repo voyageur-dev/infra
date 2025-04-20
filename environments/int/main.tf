@@ -102,6 +102,27 @@ module "subscriptions_table" {
   }
 }
 
+module "rb_service" {
+  source = "terraform-aws-modules/lambda/aws"
+
+  function_name = "rb-service"
+  handler       = "revisionbuddy.App::handleRequest"
+  runtime       = "java17"
+
+  create_package      = false
+  s3_existing_package = {
+    bucket = module.codebase_bucket.s3_bucket_id
+    key    = "rb-service-${var.environment}.zip"
+  }
+
+  attach_policy_statements = false
+  attach_existing_policies = true
+  existing_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+    "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
+  ]
+}
+
 module "rb_exam_questions_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
 
@@ -125,7 +146,7 @@ module "rb_exam_questions_table" {
   write_capacity = 5
 
   tags = {
-    Name = "rb-service"
+    Name = module.rb_service.function_name
     Environment = var.environment
   }
 }
@@ -145,7 +166,7 @@ module "rb_exam_question_images_bucket" {
   object_ownership         = "ObjectWriter"
 
   tags = {
-    Name = "rb-service"
+    Name = module.rb_service.function_name
     Environment = var.environment
   }
 }
