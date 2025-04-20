@@ -115,9 +115,8 @@ module "rb_service" {
     key    = "rb-service-${var.environment}.zip"
   }
 
-  attach_policy_statements = false
-  attach_existing_policies = true
-  existing_policy_arns = [
+  attach_policies = true
+  policies = [
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
     "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
   ]
