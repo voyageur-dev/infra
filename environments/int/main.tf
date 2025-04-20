@@ -124,6 +124,7 @@ module "rb_service" {
 
 module "rb_exam_questions_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
+  depends_on = [module.rb_service]
 
   name     = "rb-exam-questions-${var.environment}"
   hash_key = "exam_id"
@@ -152,6 +153,7 @@ module "rb_exam_questions_table" {
 
 module "rb_exam_question_images_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
+  depends_on = [module.rb_service]
 
   bucket = "rb-exam-question-images-${var.environment}"
   acl    = "private"
