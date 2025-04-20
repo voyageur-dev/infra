@@ -146,7 +146,7 @@ module "rb_exam_questions_table" {
   write_capacity = 5
 
   tags = {
-    Name = module.rb_service.function_name
+    Name = module.rb_service.lambda_function_name
     Environment = var.environment
   }
 }
@@ -167,7 +167,7 @@ module "rb_exam_question_images_bucket" {
   object_ownership         = "ObjectWriter"
 
   tags = {
-    Name = module.rb_service.function_name
+    Name = module.rb_service.lambda_function_name
     Environment = var.environment
   }
 }
