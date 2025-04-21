@@ -121,6 +121,10 @@ module "rb_service" {
     "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
   ]
 
+  environment_variables = {
+    QUESTIONs_TABLE_NAME = module.rb_exam_questions_table.dynamodb_table_id,
+  }
+
   timeout = 10
   memory_size = 256
 
@@ -132,7 +136,6 @@ module "rb_service" {
 
 module "rb_exam_questions_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
-  depends_on = [module.rb_service]
 
   name     = "rb-exam-questions-${var.environment}"
   hash_key = "exam_id"
@@ -154,14 +157,12 @@ module "rb_exam_questions_table" {
   write_capacity = 5
 
   tags = {
-    Name = module.rb_service.lambda_function_name
     Environment = var.environment
   }
 }
 
 module "rb_exam_question_images_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
-  depends_on = [module.rb_service]
 
   bucket = "rb-exam-question-images-${var.environment}"
   acl    = "private"
@@ -175,7 +176,6 @@ module "rb_exam_question_images_bucket" {
   object_ownership         = "ObjectWriter"
 
   tags = {
-    Name = module.rb_service.lambda_function_name
     Environment = var.environment
   }
 }
