@@ -121,6 +121,9 @@ module "rb_service" {
     "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
   ]
 
+  timeout = 10
+  memory_size = 256
+
   tags = {
     Name = "rb-service"
     Environment = var.environment
