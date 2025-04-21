@@ -143,6 +143,12 @@ module "api_gateway" {
   name          = "api-gateway-${var.environment}"
   protocol_type = "HTTP"
 
+  cors_configuration = {
+    allow_headers = ["content-type", "x-amz-date", "authorization", "x-api-key", "x-amz-security-token", "x-amz-user-agent"]
+    allow_methods = ["*"]
+    allow_origins = ["*"]
+  }
+
   # Disable creation of the domain name and API mapping
   create_domain_name = false
 
