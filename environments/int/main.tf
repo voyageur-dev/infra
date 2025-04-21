@@ -17,12 +17,6 @@ module "codebase_bucket" {
   }
 }
 
-module "api-gateway" {
-  source = "../../modules/api-gateway"
-  environment = var.environment
-  auto_deploy = true
-}
-
 module "user-service" {
   source = "../../modules/functions"
   environment = var.environment
@@ -38,45 +32,6 @@ module "user-service-role" {
   source = "../../modules/role"
   environment = var.environment
   service_name = "user-service"
-}
-
-module "user-service-integration" {
-  source = "../../modules/integration"
-  api_gateway_id = module.api-gateway.api_gateway_id
-  integration_uri = module.user-service.invoke_arn
-}
-
-module "route" {
-  source = "../../modules/route"
-  api_gateway_id = module.api-gateway.api_gateway_id
-
-  routes = {
-    "userservice.getUser" = {
-      target = module.user-service-integration.integration_id
-      path = "/users/{username}"
-      method = "GET"
-    },
-    "userservice.signUp" = {
-      target = module.user-service-integration.integration_id
-      path = "/users"
-      method = "POST"
-    },
-    "userservice.confirmSignUp" = {
-      target = module.user-service-integration.integration_id
-      path = "/users/code"
-      method = "POST"
-    },
-    "userservice.resendCode" = {
-      target = module.user-service-integration.integration_id
-      path = "/users/resend"
-      method = "POST"
-    },
-    "userservice.signIn" = {
-      target = module.user-service-integration.integration_id
-      path = "/users/signIn"
-      method = "POST"
-    }
-  }
 }
 
 module "subscriptions_table" {
@@ -175,6 +130,36 @@ module "rb_exam_question_images_bucket" {
 
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
+module "api_gateway" {
+  source = "terraform-aws-modules/apigateway-v2/aws"
+  depends_on = [module.rb_service]
+
+  name          = "api-gateway-${var.environment}"
+  protocol_type = "HTTP"
+
+  routes = {
+    "GET /rb/questions" = {
+      integration = {
+        uri                    = module.rb_service.invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 12000
+      }
+    },
+
+    "GET /rb/{examId}/metadata" = {
+      integration = {
+        uri                    = module.rb_service.invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 12000
+      }
+    }
+  }
 
   tags = {
     Environment = var.environment
