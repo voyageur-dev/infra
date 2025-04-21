@@ -73,21 +73,18 @@ module "rb_service" {
     key    = "rb-service-${var.environment}.jar"
   }
 
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:*/*/*/*"
+    }
+  }
+
   attach_policies = true
   number_of_policies = 1
   policies = [
     "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
   ]
-
-  attach_policy_statements = true
-  policy_statements = {
-    allow_api_gateway = {
-      effect    = "Allow",
-      actions   = ["lambda:InvokeFunction"],
-      principal = "apigateway.amazonaws.com",
-      resources = ["arn:aws:lambda:${var.region}:${data.aws_caller_identity.current.account_id}:function:rb-service-${var.environment}:*"]
-    }
-}
 
   environment_variables = {
     QUESTIONS_TABLE_NAME = module.rb_exam_questions_table.dynamodb_table_id,
