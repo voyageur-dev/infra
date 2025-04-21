@@ -105,14 +105,14 @@ module "subscriptions_table" {
 module "rb_service" {
   source = "terraform-aws-modules/lambda/aws"
 
-  function_name = "rb-service"
+  function_name = "rb-service-${var.environment}"
   handler       = "revisionbuddy.App::handleRequest"
   runtime       = "java17"
 
   create_package      = false
   s3_existing_package = {
     bucket = module.codebase_bucket.s3_bucket_id
-    key    = "rb-service-${var.environment}.zip"
+    key    = "rb-service-${var.environment}.jar"
   }
 
   attach_policies = true
@@ -120,6 +120,11 @@ module "rb_service" {
     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
     "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
   ]
+
+  tags = {
+    Name = "rb-service"
+    Environment = var.environment
+  }
 }
 
 module "rb_exam_questions_table" {
