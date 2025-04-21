@@ -104,6 +104,7 @@ module "subscriptions_table" {
 
 module "rb_service" {
   source = "terraform-aws-modules/lambda/aws"
+  depends_on = [module.rb_exam_questions_table]
 
   function_name = "rb-service-${var.environment}"
   handler       = "revisionbuddy.App::handleRequest"
@@ -122,7 +123,7 @@ module "rb_service" {
   ]
 
   environment_variables = {
-    QUESTIONs_TABLE_NAME = module.rb_exam_questions_table.dynamodb_table_id,
+    QUESTIONS_TABLE_NAME = module.rb_exam_questions_table.dynamodb_table_id,
   }
 
   timeout = 10
