@@ -146,7 +146,7 @@ module "api_gateway" {
   routes = {
     "GET /rb/questions" = {
       integration = {
-        uri                    = module.rb_service.invoke_arn
+        uri                    = module.rb_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
         timeout_milliseconds   = 12000
       }
@@ -154,7 +154,7 @@ module "api_gateway" {
 
     "GET /rb/{examId}/metadata" = {
       integration = {
-        uri                    = module.rb_service.invoke_arn
+        uri                    = module.rb_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
         timeout_milliseconds   = 12000
       }
