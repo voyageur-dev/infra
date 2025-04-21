@@ -143,6 +143,15 @@ module "api_gateway" {
   name          = "api-gateway-${var.environment}"
   protocol_type = "HTTP"
 
+  # Disable creation of the domain name and API mapping
+  create_domain_name = false
+
+  # Disable creation of Route53 alias record(s) for the custom domain
+  create_domain_records = false
+
+  # Disable creation of the ACM certificate for the custom domain
+  create_certificate = false
+
   routes = {
     "GET /rb/questions" = {
       integration = {
