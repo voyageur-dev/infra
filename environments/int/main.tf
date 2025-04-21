@@ -117,9 +117,8 @@ module "rb_service" {
   }
 
   attach_policies = true
-  number_of_policies = 2
+  number_of_policies = 1
   policies = [
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
     "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
   ]
 
