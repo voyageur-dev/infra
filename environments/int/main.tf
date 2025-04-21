@@ -79,10 +79,10 @@ module "rb_service" {
 
   attach_policy_statements = true
   policy_statements = {
-    api_gateway = {
+    allow_api_gateway = {
       effect    = "Allow",
       actions   = ["lambda:InvokeFunction"],
-      resources = [module.rb_service.lambda_function_arn]
+      principal = "apigateway.amazonaws.com"
     }
 }
 
