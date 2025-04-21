@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 module "cognito" {
   source             = "../../modules/cognito"
   environment        = var.environment
@@ -82,7 +84,8 @@ module "rb_service" {
     allow_api_gateway = {
       effect    = "Allow",
       actions   = ["lambda:InvokeFunction"],
-      principal = "apigateway.amazonaws.com"
+      principal = "apigateway.amazonaws.com",
+      resources = ["arn:aws:lambda:${var.region}:${data.aws_caller_identity.current.account_id}:function:rb-service-${var.environment}:*"]
     }
 }
 
