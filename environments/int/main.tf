@@ -73,6 +73,8 @@ module "rb_service" {
     key    = "rb-service-${var.environment}.jar"
   }
 
+  publish = true
+
   allowed_triggers = {
     APIGatewayAny = {
       service    = "apigateway"
