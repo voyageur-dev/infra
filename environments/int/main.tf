@@ -77,6 +77,15 @@ module "rb_service" {
     "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
   ]
 
+  attach_policy_statements = true
+  policy_statements = {
+    api_gateway = {
+      effect    = "Allow",
+      actions   = ["lambda:InvokeFunction"],
+      resources = [module.rb_service.lambda_function_arn]
+    }
+}
+
   environment_variables = {
     QUESTIONS_TABLE_NAME = module.rb_exam_questions_table.dynamodb_table_id,
   }
