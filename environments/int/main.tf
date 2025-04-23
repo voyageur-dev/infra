@@ -170,6 +170,37 @@ module "api_gateway" {
   create_certificate = false
 
   routes = {
+    # user-service
+    "POST /users" = {
+      integration = {
+        uri                    = module.user-service.invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 12000
+      }
+    },
+    "POST /users/code" = {
+      integration = {
+        uri                    = module.user-service.invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 12000
+      }
+    },
+    "POST /users/resend" = {
+      integration = {
+        uri                    = module.user-service.invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 12000
+      }
+    },
+    "POST /users/signIn" = {
+      integration = {
+        uri                    = module.user-service.invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 12000
+      }
+    },
+
+    # rb-service
     "GET /rb/questions" = {
       integration = {
         uri                    = module.rb_service.lambda_function_invoke_arn
@@ -177,7 +208,6 @@ module "api_gateway" {
         timeout_milliseconds   = 12000
       }
     },
-
     "GET /rb/{examId}/metadata" = {
       integration = {
         uri                    = module.rb_service.lambda_function_invoke_arn
