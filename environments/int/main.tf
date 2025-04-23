@@ -223,10 +223,10 @@ module "api_gateway" {
   create_certificate = false
 
   authorizers = {
-    "cognito" = {
+    cognito = {
       authorizer_type  = "JWT"
       identity_sources = ["$request.header.Authorization"]
-      name             = "cognito-authorizer"
+      name             = "cognito"
       jwt_configuration = {
         audience         = [module.cognito.client_id]
         issuer           = "https://${module.cognito.endpoint}"
@@ -267,7 +267,7 @@ module "api_gateway" {
 
     # rb-service
     "GET /rb/questions" = {
-      authorizer_key = "cognito-authorizer"
+      authorizer_key = "cognito"
       integration = {
         uri                    = module.rb_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
