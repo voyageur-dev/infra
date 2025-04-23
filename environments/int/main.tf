@@ -202,7 +202,7 @@ module "rb_exam_question_images_bucket" {
 
 module "api_gateway" {
   source = "terraform-aws-modules/apigateway-v2/aws"
-  depends_on = [module.rb_service]
+  depends_on = [module.user_service, module.rb_service]
 
   name          = "api-gateway-${var.environment}"
   protocol_type = "HTTP"
@@ -221,6 +221,18 @@ module "api_gateway" {
 
   # Disable creation of the ACM certificate for the custom domain
   create_certificate = false
+
+  authorizers = {
+    "cognito" = {
+      authorizer_type  = "JWT"
+      identity_sources = ["$request.header.Authorization"]
+      name             = "cognito-authorizer"
+      jwt_configuration = {
+        audience         = [module.cognito.client_id]
+        issuer           = "https://${module.cognito.endpoint}"
+      }
+    }
+  }
 
   routes = {
     # user-service
@@ -255,6 +267,7 @@ module "api_gateway" {
 
     # rb-service
     "GET /rb/questions" = {
+      authorizer_key = "cognito"
       integration = {
         uri                    = module.rb_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
