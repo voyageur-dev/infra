@@ -267,7 +267,7 @@ module "api_gateway" {
 
     # rb-service
     "GET /rb/questions" = {
-      authorizer_key = "cognito"
+      authorizer_key = "cognito-authorizer"
       integration = {
         uri                    = module.rb_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
