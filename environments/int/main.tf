@@ -19,23 +19,6 @@ module "codebase_bucket" {
   }
 }
 
-module "user-service" {
-  source = "../../modules/functions"
-  environment = var.environment
-  service_name = "user-service"
-  role_arn = module.user-service-role.role_arn
-  environment_variables = {
-    USER_POOL_ID = module.cognito.user_pool_id,
-    CLIENT_ID    = module.cognito.client_id
-  }
-}
-
-module "user-service-role" {
-  source = "../../modules/role"
-  environment = var.environment
-  service_name = "user-service"
-}
-
 module "subscriptions_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
 
@@ -59,9 +42,52 @@ module "subscriptions_table" {
   }
 }
 
+module "user_service" {
+  source = "terraform-aws-modules/lambda/aws"
+  depends_on = [module.cognito]
+
+  function_name = "user-service-${var.environment}"
+  handler       = "userservice.App::handleRequest"
+  runtime       = "java17"
+
+  create_package      = false
+  s3_existing_package = {
+    bucket = module.codebase_bucket.s3_bucket_id
+    key    = "user-service-${var.environment}.jar"
+  }
+
+  publish = true
+
+  allowed_triggers = {
+    APIGatewayAny = {
+      service    = "apigateway"
+      source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:*/*/*/*"
+    }
+  }
+
+  attach_policies = true
+  number_of_policies = 1
+  policies = [
+    "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+  ]
+
+  environment_variables = {
+    USER_POOL_ID = module.cognito.user_pool_id,
+    CLIENT_ID    = module.cognito.client_id
+  }
+
+  timeout = 10
+  memory_size = 256
+
+  tags = {
+    Name = "user-service"
+    Environment = var.environment
+  }
+}
+
 module "rb_service" {
   source = "terraform-aws-modules/lambda/aws"
-  depends_on = [module.rb_exam_questions_table]
+  depends_on = [module.rb_exam_questions_table, module.rb_bookmark_table]
 
   function_name = "rb-service-${var.environment}"
   handler       = "revisionbuddy.App::handleRequest"
@@ -97,6 +123,33 @@ module "rb_service" {
 
   tags = {
     Name = "rb-service"
+    Environment = var.environment
+  }
+}
+
+module "rb_bookmark_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "rb-bookmarks-${var.environment}"
+  hash_key = "user_id"
+  range_key = "exam_question_key"
+
+  attributes = [
+    {
+      name = "user_id"
+      type = "S"
+    },
+    {
+      name = "exam_question_key"
+      type = "S"
+    }
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
+
+  tags = {
     Environment = var.environment
   }
 }
@@ -173,28 +226,28 @@ module "api_gateway" {
     # user-service
     "POST /users" = {
       integration = {
-        uri                    = module.user-service.invoke_arn
+        uri                    = module.user_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
         timeout_milliseconds   = 12000
       }
     },
     "POST /users/code" = {
       integration = {
-        uri                    = module.user-service.invoke_arn
+        uri                    = module.user_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
         timeout_milliseconds   = 12000
       }
     },
     "POST /users/resend" = {
       integration = {
-        uri                    = module.user-service.invoke_arn
+        uri                    = module.user_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
         timeout_milliseconds   = 12000
       }
     },
     "POST /users/signIn" = {
       integration = {
-        uri                    = module.user-service.invoke_arn
+        uri                    = module.user_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
         timeout_milliseconds   = 12000
       }
