@@ -59,7 +59,7 @@ module "user_service" {
   publish = true
 
   allowed_triggers = {
-    APIGatewayAny = {
+    APIGateway = {
       service    = "apigateway"
       source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:*/*/*/*"
     }
@@ -102,7 +102,7 @@ module "rb_service" {
   publish = true
 
   allowed_triggers = {
-    APIGatewayAny = {
+    APIGateway = {
       service    = "apigateway"
       source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:*/*/*/*"
     }
