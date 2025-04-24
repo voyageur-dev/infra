@@ -87,7 +87,7 @@ module "user_service" {
 
 module "rb_service" {
   source = "terraform-aws-modules/lambda/aws"
-  depends_on = [module.rb_exam_questions_table, module.rb_bookmark_table]
+  depends_on = [module.rb_questions_table, module.rb_bookmark_table]
 
   function_name = "rb-service-${var.environment}"
   handler       = "revisionbuddy.App::handleRequest"
@@ -115,7 +115,7 @@ module "rb_service" {
   ]
 
   environment_variables = {
-    QUESTIONS_TABLE_NAME = module.rb_exam_questions_table.dynamodb_table_id,
+    QUESTIONS_TABLE_NAME = module.rb_questions_table.dynamodb_table_id,
   }
 
   timeout = 10
@@ -154,6 +154,33 @@ module "rb_bookmark_table" {
   }
 }
 
+module "rb_questions_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "rb-questions-${var.environment}"
+  hash_key = "exam_id"
+  range_key = "question_id"
+
+  attributes = [
+    {
+      name = "exam_id"
+      type = "S"
+    },
+    {
+      name = "question_id"
+      type = "N"
+    }
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
 module "rb_exam_questions_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
 
@@ -175,6 +202,25 @@ module "rb_exam_questions_table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
+module "rb_question_images_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  bucket = "rb-question-images-${var.environment}"
+  acl    = "private"
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
 
   tags = {
     Environment = var.environment
