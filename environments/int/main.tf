@@ -116,6 +116,7 @@ module "rb_service" {
 
   environment_variables = {
     QUESTIONS_TABLE_NAME = module.rb_questions_table.dynamodb_table_id,
+    BOOKMARKS_TABLE_NAME = module.rb_bookmark_table.dynamodb_table_id
   }
 
   timeout = 10
