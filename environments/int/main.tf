@@ -76,7 +76,7 @@ module "user_service" {
     CLIENT_ID    = module.cognito.client_id
   }
 
-  timeout = 10
+  timeout = 16
   memory_size = 256
 
   tags = {
@@ -120,7 +120,7 @@ module "rb_service" {
     EXAM_IDS = "aws-clf-c02,aws-dea-c01,aws-saa-c03,aws-sap-c02,aws-dva-c02"
   }
 
-  timeout = 10
+  timeout = 16
   memory_size = 256
 
   tags = {
@@ -275,7 +275,7 @@ module "api_gateway" {
       integration = {
         uri                    = module.rb_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
-        timeout_milliseconds   = 12000
+        timeout_milliseconds   = 18000
       }
     },
     "GET /rb/metadata" = {
@@ -285,7 +285,7 @@ module "api_gateway" {
       integration = {
         uri                    = module.rb_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
-        timeout_milliseconds   = 12000
+        timeout_milliseconds   = 18000
       }
     }
   }
