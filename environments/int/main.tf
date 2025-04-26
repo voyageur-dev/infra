@@ -287,7 +287,25 @@ module "api_gateway" {
         payload_format_version = "2.0"
         timeout_milliseconds   = 18000
       }
+    },
+    "GET /rb/bookmarks" = {
+      authorizer_key = "cognito"
+      authorization_type = "JWT"
+      integration = {
+        uri                    = module.rb_service.lambda_function_invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 18000
+      }
     }
+    "POST /rb/bookmarks" = {
+      authorizer_key = "cognito"
+      authorization_type = "JWT"
+      integration = {
+        uri                    = module.rb_service.lambda_function_invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 18000
+      }
+    },
   }
 
   tags = {
