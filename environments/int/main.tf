@@ -111,7 +111,7 @@ module "rb_service" {
   attach_policies = true
   number_of_policies = 1
   policies = [
-    "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
+    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
   ]
 
   environment_variables = {
@@ -324,7 +324,10 @@ module "api_gateway" {
         timeout_milliseconds   = 12000
       }
     },
-    "GET /rb/{examId}/metadata" = {
+    "GET /rb/metadata" = {
+      authorizer_key = "cognito"
+      authorization_type = "JWT"
+
       integration = {
         uri                    = module.rb_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
