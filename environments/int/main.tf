@@ -306,6 +306,15 @@ module "api_gateway" {
         timeout_milliseconds   = 18000
       }
     },
+    "DELETE /rb/bookmarks/{examId}/{questionId}" = {
+      authorizer_key = "cognito"
+      authorization_type = "JWT"
+      integration = {
+        uri                    = module.rb_service.lambda_function_invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 18000
+      }
+    },
   }
 
   tags = {
