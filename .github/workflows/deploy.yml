@@ -16,7 +16,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      TF_VAR_access_token_amplify = ${{ secrets.ACCESS_TOKEN_AMPLIFY }}
+      TF_VAR_access_token_amplify: ${{ secrets.ACCESS_TOKEN_AMPLIFY }}
 
     defaults:
       run:
