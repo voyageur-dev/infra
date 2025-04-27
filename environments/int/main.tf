@@ -335,6 +335,8 @@ resource "aws_amplify_app" "rb-frontend" {
   repository = "https://github.com/voyageur-dev/rb-frontend"
   access_token = var.access_token_amplify
 
+  platform = "WEB_COMPUTE"
+
   environment_variables = {
       NEXT_PUBLIC_GATEWAY_BASEURL = module.api_gateway.api_endpoint
   }
@@ -354,7 +356,7 @@ resource "aws_amplify_app" "rb-frontend" {
           commands:
             - npm run build
       artifacts:
-        baseDirectory: out
+        baseDirectory: .next
         files:
           - '**/*'
       cache:
@@ -363,7 +365,7 @@ resource "aws_amplify_app" "rb-frontend" {
     EOT
 }
 
-resource "aws_amplify_branch" "int" {
+resource "aws_amplify_branch" "rb-frontend-int" {
   app_id = aws_amplify_app.rb-frontend.id
   branch_name = "int"
 }
