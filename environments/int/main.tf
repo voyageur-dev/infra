@@ -333,6 +333,7 @@ resource "aws_amplify_app" "rb-frontend" {
   depends_on = [module.api_gateway]
   name = "rb-frontend-${var.environment}"
   repository = "https://github.com/voyageur-dev/rb-frontend"
+  access_token = var.access_token_amplify
 
   environment_variables = {
       NEXT_PUBLIC_GATEWAY_BASEURL = module.api_gateway.api_endpoint

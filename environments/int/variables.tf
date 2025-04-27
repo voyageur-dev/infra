@@ -9,3 +9,8 @@ variable "environment" {
   type        = string
   default     = "int"
 }
+
+variable "access_token_amplify" {
+  description = "Access token for amplify to auto deploy github repo"
+  type        = string
+}
