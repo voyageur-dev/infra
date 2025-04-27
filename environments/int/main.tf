@@ -266,6 +266,13 @@ module "api_gateway" {
         timeout_milliseconds   = 12000
       }
     },
+    "PUT /users/token" = {
+      integration = {
+        uri                    = module.user_service.lambda_function_invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 12000
+      }
+    }
 
     # rb-service
     "GET /rb/questions" = {
