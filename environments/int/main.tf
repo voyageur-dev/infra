@@ -328,3 +328,41 @@ module "api_gateway" {
     Environment = var.environment
   }
 }
+
+resource "aws_amplify_app" "rb-frontend" {
+  depends_on = [module.api_gateway]
+  name = "rb-frontend-${var.environment}"
+  repository = "https://github.com/voyageur-dev/rb-frontend"
+
+  environment_variables = {
+      NEXT_PUBLIC_GATEWAY_BASEURL = module.api_gateway.api_endpoint
+  }
+
+  tags = {
+    Environment = var.environment
+  }
+
+  build_spec = <<-EOT
+    version: 1.0
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm install
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: out
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+    EOT
+}
+
+resource "aws_amplify_branch" "int" {
+  app_id = aws_amplify_app.rb-frontend.id
+  branch_name = "int"
+}
