@@ -116,8 +116,8 @@ module "rb_service" {
 
   environment_variables = {
     QUESTIONS_TABLE_NAME = module.rb_questions_table.dynamodb_table_id,
-    BOOKMARKS_TABLE_NAME = module.rb_bookmarks_table.dynamodb_table_id
-    EXAM_IDS = "aws-clf-c02,aws-dea-c01,aws-saa-c03,aws-sap-c02,aws-dva-c02"
+    BOOKMARKS_TABLE_NAME = module.rb_bookmarks_table.dynamodb_table_id,
+    METADATA_TABLE_NAME = module.rb_metadata_table.dynamodb_table_id,
   }
 
   timeout = 16
