@@ -87,7 +87,7 @@ module "user_service" {
 
 module "rb_service" {
   source = "terraform-aws-modules/lambda/aws"
-  depends_on = [module.rb_questions_table, module.rb_bookmarks_table]
+  depends_on = [module.rb_questions_table, module.rb_bookmarks_table, module.rb_metadata_table]
 
   function_name = "rb-service-${var.environment}"
   handler       = "revisionbuddy.App::handleRequest"
@@ -125,6 +125,28 @@ module "rb_service" {
 
   tags = {
     Name = "rb-service"
+    Environment = var.environment
+  }
+}
+
+module "rb_metadata_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "rb-metadata-${var.environment}"
+  hash_key = "exam_id"
+
+  attributes = [
+    {
+      name = "exam_id"
+      type = "S"
+    },
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 3
+  write_capacity = 3
+
+  tags = {
     Environment = var.environment
   }
 }
