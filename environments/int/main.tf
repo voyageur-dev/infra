@@ -135,12 +135,12 @@ module "rb_bookmark_service" {
 
   function_name = "rb-bookmark-service-${var.environment}"
   handler       = "handler"
-  runtime       = "provided.al2"
+  runtime       = "provided.al2023"
 
   create_package      = false
   s3_existing_package = {
     bucket = module.codebase_bucket.s3_bucket_id
-    key    = "rb-bookmark-service-${var.environment}.jar"
+    key    = "rb-bookmark-service-${var.environment}.zip"
   }
 
   publish = true
