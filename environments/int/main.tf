@@ -129,6 +129,50 @@ module "rb_service" {
   }
 }
 
+module "rb_bookmark_service" {
+  source = "terraform-aws-modules/lambda/aws"
+  depends_on = [module.rb_bookmarks_table]
+
+  function_name = "rb-bookmark-service-${var.environment}"
+  handler       = "handler"
+  runtime       = "go1.x"
+
+  create_package      = false
+  s3_existing_package = {
+    bucket = module.codebase_bucket.s3_bucket_id
+    key    = "rb-bookmark-service-${var.environment}.jar"
+  }
+
+  publish = true
+
+  allowed_triggers = {
+    APIGateway = {
+      service    = "apigateway"
+      source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:*/*/*/*"
+    }
+  }
+
+  attach_policies = true
+  number_of_policies = 1
+  policies = [
+    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+  ]
+
+  environment_variables = {
+    BOOKMARKS_TABLE_NAME = module.rb_bookmarks_table.dynamodb_table_id,
+  }
+
+  timeout = 16
+  memory_size = 128
+  architectures = ["arm64"]
+
+  tags = {
+    Name = "rb-bookmark-service"
+    Environment = var.environment
+  }
+}
+
+
 module "rb_metadata_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
 
@@ -361,6 +405,7 @@ resource "aws_amplify_app" "rb-frontend" {
 
   environment_variables = {
       NEXT_PUBLIC_GATEWAY_BASEURL = module.api_gateway.api_endpoint
+      NEXTAUTH_URL = "http://localhost:3001"
   }
 
   tags = {
@@ -376,6 +421,7 @@ resource "aws_amplify_app" "rb-frontend" {
             - npm install
         build:
           commands:
+            - echo "NEXTAUTH_URL=$NEXTAUTH_URL" >> .env
             - npm run build
       artifacts:
         baseDirectory: .next
