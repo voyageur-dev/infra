@@ -135,7 +135,7 @@ module "rb_bookmark_service" {
 
   function_name = "rb-bookmark-service-${var.environment}"
   handler       = "handler"
-  runtime       = "go1.x"
+  runtime       = "provided.al2"
 
   create_package      = false
   s3_existing_package = {
