@@ -134,7 +134,7 @@ module "rb_bookmark_service" {
   depends_on = [module.rb_bookmarks_table]
 
   function_name = "rb-bookmark-service-${var.environment}"
-  handler       = "handler"
+  handler       = "bootstrap"
   runtime       = "provided.al2023"
 
   create_package      = false
