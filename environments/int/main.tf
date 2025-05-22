@@ -162,7 +162,7 @@ module "rb_bookmark_service" {
     BOOKMARKS_TABLE_NAME = module.rb_bookmarks_table.dynamodb_table_id,
   }
 
-  timeout = 16
+  timeout = 5
   memory_size = 128
   architectures = ["arm64"]
 
@@ -361,31 +361,33 @@ module "api_gateway" {
         timeout_milliseconds   = 18000
       }
     },
+
+    # rb-bookmark-service
     "GET /rb/bookmarks" = {
       authorizer_key = "cognito"
       authorization_type = "JWT"
       integration = {
         uri                    = module.rb_bookmark_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
-        timeout_milliseconds   = 18000
+        timeout_milliseconds   = 8000
       }
     }
     "POST /rb/bookmarks" = {
       authorizer_key = "cognito"
       authorization_type = "JWT"
       integration = {
-        uri                    = module.rb_service.lambda_function_invoke_arn
+        uri                    = module.rb_bookmark_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
-        timeout_milliseconds   = 18000
+        timeout_milliseconds   = 8000
       }
     },
     "DELETE /rb/bookmarks/{examId}/{questionId}" = {
       authorizer_key = "cognito"
       authorization_type = "JWT"
       integration = {
-        uri                    = module.rb_service.lambda_function_invoke_arn
+        uri                    = module.rb_bookmark_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
-        timeout_milliseconds   = 18000
+        timeout_milliseconds   = 8000
       }
     },
   }
