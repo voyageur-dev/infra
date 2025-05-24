@@ -172,6 +172,50 @@ module "rb_bookmark_service" {
   }
 }
 
+module "rb_metadata_service" {
+  source = "terraform-aws-modules/lambda/aws"
+  depends_on = [module.rb_metadata_bucket]
+
+  function_name = "rb-metadata-service-${var.environment}"
+  handler       = "bootstrap"
+  runtime       = "provided.al2023"
+
+  create_package      = false
+  s3_existing_package = {
+    bucket = module.codebase_bucket.s3_bucket_id
+    key    = "rb-metadata-service-${var.environment}.zip"
+  }
+
+  publish = true
+
+  allowed_triggers = {
+    APIGateway = {
+      service    = "apigateway"
+      source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:*/*/*/*"
+    }
+  }
+
+  attach_policies = true
+  number_of_policies = 1
+  policies = [
+    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  ]
+
+  environment_variables = {
+    METADATA_BUCKET_NAME = module.rb_metadata_bucket.s3_bucket_id,
+    METADATA_FILE_KEY = "metadata.json"
+  }
+
+  timeout = 5
+  memory_size = 128
+  architectures = ["arm64"]
+
+  tags = {
+    Name = "rb-metadata-service"
+    Environment = var.environment
+  }
+}
+
 module "rb_metadata_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
