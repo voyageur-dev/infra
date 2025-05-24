@@ -216,6 +216,49 @@ module "rb_metadata_service" {
   }
 }
 
+module "rb_question_service" {
+  source = "terraform-aws-modules/lambda/aws"
+  depends_on = [module.rb_questions_table]
+
+  function_name = "rb-question-service-${var.environment}"
+  handler       = "bootstrap"
+  runtime       = "provided.al2023"
+
+  create_package      = false
+  s3_existing_package = {
+    bucket = module.codebase_bucket.s3_bucket_id
+    key    = "rb-question-service-${var.environment}.zip"
+  }
+
+  publish = true
+
+  allowed_triggers = {
+    APIGateway = {
+      service    = "apigateway"
+      source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:*/*/*/*"
+    }
+  }
+
+  attach_policies = true
+  number_of_policies = 1
+  policies = [
+    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+  ]
+
+  environment_variables = {
+    QUESTIONS_TABLE_NAME = module.rb_questions_table.dynamodb_table_id,
+  }
+
+  timeout = 5
+  memory_size = 128
+  architectures = ["arm64"]
+
+  tags = {
+    Name = "rb-question-service"
+    Environment = var.environment
+  }
+}
+
 module "rb_metadata_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
