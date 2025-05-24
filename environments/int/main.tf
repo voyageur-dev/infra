@@ -375,7 +375,7 @@ module "rb_question_images_bucket" {
 
 module "api_gateway" {
   source = "terraform-aws-modules/apigateway-v2/aws"
-  depends_on = [module.user_service, module.rb_service]
+  depends_on = [module.user_service, module.rb_question_service, module.rb_bookmark_service, module.rb_metadata_service]
 
   name          = "api-gateway-${var.environment}"
   protocol_type = "HTTP"
@@ -445,15 +445,15 @@ module "api_gateway" {
       }
     }
 
-    # rb-service
+    # rb-question-service
     "GET /rb/questions" = {
       authorizer_key = "cognito"
       authorization_type = "JWT"
 
       integration = {
-        uri                    = module.rb_service.lambda_function_invoke_arn
+        uri                    = module.rb_question_service.lambda_function_invoke_arn
         payload_format_version = "2.0"
-        timeout_milliseconds   = 18000
+        timeout_milliseconds   = 8000
       }
     },
 
@@ -530,6 +530,7 @@ resource "aws_amplify_app" "rb-frontend" {
             - npm install
         build:
           commands:
+            - echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> .env
             - echo "NEXTAUTH_URL=$NEXTAUTH_URL" >> .env
             - npm run build
       artifacts:
