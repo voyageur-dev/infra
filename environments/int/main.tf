@@ -479,5 +479,5 @@ resource "aws_amplify_app" "rb-frontend" {
 
 resource "aws_amplify_branch" "rb-frontend-int" {
   app_id = aws_amplify_app.rb-frontend.id
-  branch_name = "int"
+  branch_name = var.environment
 }
