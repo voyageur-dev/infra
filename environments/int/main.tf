@@ -178,6 +178,10 @@ module "rb_metadata_bucket" {
   bucket = "rb-metadata-${var.environment}"
   acl    = "private"
 
+  versioning = {
+    enabled = true
+  }
+
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
 
