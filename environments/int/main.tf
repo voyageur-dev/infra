@@ -152,14 +152,16 @@ module "rb_metadata_service" {
   }
 
   attach_policies = true
-  number_of_policies = 1
+  number_of_policies = 2
   policies = [
-    "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
   ]
 
   environment_variables = {
     METADATA_BUCKET_NAME = module.rb_metadata_bucket.s3_bucket_id,
     METADATA_FILE_KEY = "metadata.json"
+    QUESTION_SERVICE_ARN = module.rb_question_service.lambda_function_arn
   }
 
   timeout = 5
