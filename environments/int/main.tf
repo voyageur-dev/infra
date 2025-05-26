@@ -322,7 +322,7 @@ module "rb_question_images_bucket" {
   }
 }
 
-module "updateMetadataScheduler" {
+module "update_metadata_schedule" {
   source = "terraform-aws-modules/eventbridge/aws"
   depends_on = [module.rb_metadata_service]
 
@@ -332,7 +332,7 @@ module "updateMetadataScheduler" {
   lambda_target_arns   = [module.rb_metadata_service.lambda_function_arn]
 
   schedules = {
-    update-metadata-scheduler = {
+    update-metadata = {
       description         = "Run update metadata everyday 3am Toronto Time"
       schedule_expression = "cron(0 8 * * ? *)"
       timezone            = "America/Toronto"
