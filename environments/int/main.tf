@@ -322,6 +322,30 @@ module "rb_question_images_bucket" {
   }
 }
 
+module "updateMetadataScheduler" {
+  source = "terraform-aws-modules/eventbridge/aws"
+  depends_on = [module.rb_metadata_service]
+
+  create_bus = false
+
+  attach_lambda_policy = true
+  lambda_target_arns   = [module.rb_metadata_service.lambda_function_arn]
+
+  schedules = {
+    update-metadata-scheduler = {
+      description         = "Run update metadata everyday 3am Toronto Time"
+      schedule_expression = "cron(0 8 * * ? *)"
+      timezone            = "America/Toronto"
+      arn                 = module.rb_metadata_service.lambda_function_arn
+      input               = jsonencode({ "routeKey": "PUT /rb/metadata" })
+    }
+  }
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
 module "api_gateway" {
   source = "terraform-aws-modules/apigateway-v2/aws"
   depends_on = [module.user_service, module.rb_question_service, module.rb_bookmark_service, module.rb_metadata_service]
