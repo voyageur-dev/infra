@@ -152,10 +152,23 @@ module "rb_metadata_service" {
   }
 
   attach_policies = true
-  number_of_policies = 2
+  number_of_policies = 1
   policies = [
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+  ]
+
+  attach_policy_statements = true
+  policy_statements = [
+    {
+      sid    = "AllowLambdaInvoke"
+      effect = "Allow"
+      actions = [
+        "lambda:InvokeFunction"
+      ]
+      resources = [
+        module.rb_question_service.lambda_function_arn
+      ]
+    }
   ]
 
   environment_variables = {
