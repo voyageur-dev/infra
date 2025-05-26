@@ -334,7 +334,7 @@ module "update_metadata_schedule" {
   schedules = {
     update-metadata = {
       description         = "Run update metadata everyday 3am Toronto Time"
-      schedule_expression = "cron(0 8 * * ? *)"
+      schedule_expression = "cron(0/1 * * * ? *)"
       timezone            = "America/Toronto"
       arn                 = module.rb_metadata_service.lambda_function_arn
       input               = jsonencode({ "routeKey": "PUT /rb/metadata" })
