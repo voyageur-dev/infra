@@ -268,8 +268,8 @@ module "rb_bookmarks_table" {
   ]
 
   billing_mode   = "PROVISIONED"
-  read_capacity  = 5
-  write_capacity = 5
+  read_capacity  = 3
+  write_capacity = 3
 
   tags = {
     Environment = var.environment
@@ -297,6 +297,33 @@ module "rb_questions_table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
+module "rb_ask_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "rb-ask-${var.environment}"
+  hash_key = "exam_question_key"
+  range_key = "model"
+
+  attributes = [
+    {
+      name = "exam_question_key"
+      type = "S"
+    },
+    {
+      name = "model"
+      type = "S"
+    }
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 3
+  write_capacity = 3
 
   tags = {
     Environment = var.environment
