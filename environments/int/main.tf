@@ -230,6 +230,50 @@ module "rb_question_service" {
   }
 }
 
+module "rb_ask_service" {
+  source = "terraform-aws-modules/lambda/aws"
+  depends_on = [module.rb_ask_table]
+
+  function_name = "rb-ask-service-${var.environment}"
+  handler       = "bootstrap"
+  runtime       = "provided.al2023"
+
+  create_package      = false
+  s3_existing_package = {
+    bucket = module.codebase_bucket.s3_bucket_id
+    key    = "rb-ask-service-${var.environment}.zip"
+  }
+
+  publish = true
+
+  allowed_triggers = {
+    APIGateway = {
+      service    = "apigateway"
+      source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:*/*/*/*"
+    }
+  }
+
+  attach_policies = true
+  number_of_policies = 1
+  policies = [
+    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+  ]
+
+  environment_variables = {
+    ASK_TABLE_NAME = module.rb_ask_table.dynamodb_table_id,
+    GENAI_API_KEY = var.genai_api_key,
+  }
+
+  timeout = 5
+  memory_size = 128
+  architectures = ["arm64"]
+
+  tags = {
+    Name = "rb-ask-service"
+    Environment = var.environment
+  }
+}
+
 module "rb_metadata_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
 

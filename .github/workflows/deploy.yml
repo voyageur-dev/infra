@@ -15,8 +15,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
     env:
       TF_VAR_access_token_amplify: ${{ secrets.ACCESS_TOKEN_AMPLIFY }}
+      TF_VAR_genai_api_key: ${{ secrets.GENAI_API_KEY }}
 
     defaults:
       run:
