@@ -419,7 +419,7 @@ module "update_metadata_schedule" {
 
 module "api_gateway" {
   source = "terraform-aws-modules/apigateway-v2/aws"
-  depends_on = [module.user_service, module.rb_question_service, module.rb_bookmark_service, module.rb_metadata_service]
+  depends_on = [module.user_service, module.rb_question_service, module.rb_bookmark_service, module.rb_metadata_service, module.rb_ask_service]
 
   name          = "api-gateway-${var.environment}"
   protocol_type = "HTTP"
@@ -541,6 +541,17 @@ module "api_gateway" {
         timeout_milliseconds   = 8000
       }
     },
+
+    # rb-ask-service
+    "GET /rb/ask/{examId}/{questionId}" = {
+      authorizer_key = "cognito"
+      authorization_type = "JWT"
+      integration = {
+        uri                    = module.rb_ask_service.lambda_function_invoke_arn
+        payload_format_version = "2.0"
+        timeout_milliseconds   = 5000
+      }
+    }
   }
 
   tags = {
