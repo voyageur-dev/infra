@@ -443,20 +443,20 @@ module "rb_question_images_bucket" {
 
 module "update_metadata_schedule" {
   source = "terraform-aws-modules/eventbridge/aws"
-  depends_on = [module.rb_metadata_service]
+  depends_on = [module.rb_orchestrator]
 
   create_bus = false
 
   attach_lambda_policy = true
-  lambda_target_arns   = [module.rb_metadata_service.lambda_function_arn]
+  lambda_target_arns   = [module.rb_orchestrator.lambda_function_arn]
 
   schedules = {
     update-metadata = {
       description         = "Run update metadata everyday 3am Toronto Time"
-      schedule_expression = "cron(0 3 * * ? *)"
+      schedule_expression = "cron(0/1 * * * ? *)"
       timezone            = "America/Toronto"
-      arn                 = module.rb_metadata_service.lambda_function_arn
-      input               = jsonencode({ "routeKey": "PUT /rb/metadata" })
+      arn                 = module.rb_orchestrator.lambda_function_arn
+      input               = jsonencode({ "routeKey": "PUT /rb/orchestrator/metadata" })
     }
   }
 
