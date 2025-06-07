@@ -453,7 +453,7 @@ module "update_metadata_schedule" {
   schedules = {
     update-metadata = {
       description         = "Run update metadata everyday 3am Toronto Time"
-      schedule_expression = "cron(0/1 * * * ? *)"
+      schedule_expression = "cron(0 3 * * ? *)"
       timezone            = "America/Toronto"
       arn                 = module.rb_orchestrator.lambda_function_arn
       input               = jsonencode({ "routeKey": "PUT /rb/orchestrator/metadata" })
