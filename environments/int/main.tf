@@ -274,6 +274,54 @@ module "rb_ask_service" {
   }
 }
 
+module "rb_orchestrator" {
+  source = "terraform-aws-modules/lambda/aws"
+  depends_on = [module.rb_metadata_service, module.rb_question_service, module.rb_ask_service]
+
+  function_name = "rb-orchestrator-${var.environment}"
+  handler       = "bootstrap"
+  runtime       = "provided.al2023"
+
+  create_package      = false
+  s3_existing_package = {
+    bucket = module.codebase_bucket.s3_bucket_id
+    key    = "rb-orchestrator-${var.environment}.zip"
+  }
+
+  publish = true
+
+  attach_policy_statements = true
+  policy_statements = [
+    {
+      sid    = "AllowLambdaInvoke"
+      effect = "Allow"
+      actions = [
+        "lambda:InvokeFunction"
+      ]
+      resources = [
+        module.rb_question_service.lambda_function_arn,
+        module.rb_metadata_service.lambda_function_arn,
+        module.rb_ask_service.lambda_function_arn
+      ]
+    }
+  ]
+
+  environment_variables = {
+    QUESTION_SERVICE_ARN = module.rb_question_service.lambda_function_arn
+    METADATA_SERVICE_ARN = module.rb_metadata_service.lambda_function_arn
+    ASK_SERVICE_ARN = module.rb_ask_service.lambda_function_arn
+  }
+
+  timeout = 5
+  memory_size = 128
+  architectures = ["arm64"]
+
+  tags = {
+    Name = "rb-orchestrator"
+    Environment = var.environment
+  }
+}
+
 module "rb_metadata_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
 
