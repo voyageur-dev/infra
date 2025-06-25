@@ -368,6 +368,33 @@ module "rb_bookmarks_table" {
   }
 }
 
+module "rb_metadata_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "rb-metadata-table-${var.environment}"
+  hash_key = "providerId"
+  range_key = "examId"
+
+  attributes = [
+    {
+      name = "providerId"
+      type = "S"
+    },
+    {
+      name = "examId"
+      type = "S"
+    }
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 3
+  write_capacity = 3
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
 module "rb_questions_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
 
