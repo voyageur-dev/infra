@@ -395,7 +395,7 @@ module "rb_metadata_table" {
   }
 }
 
-module "rb_questions_table" {
+module "rb_question_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
 
   name     = "rb-questions-table-${var.environment}"
@@ -422,7 +422,7 @@ module "rb_questions_table" {
   }
 }
 
-module "rb_questions_table_legacy" {
+module "rb_questions_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
 
   name     = "rb-questions-${var.environment}"
