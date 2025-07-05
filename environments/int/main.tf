@@ -398,6 +398,33 @@ module "rb_metadata_table" {
 module "rb_questions_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
 
+  name     = "rb-questions-table-${var.environment}"
+  hash_key = "providerExamKey"
+  range_key = "questionId"
+
+  attributes = [
+    {
+      name = "providerExamKey"
+      type = "S"
+    },
+    {
+      name = "questionId"
+      type = "N"
+    }
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
+module "rb_questions_table_legacy" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
   name     = "rb-questions-${var.environment}"
   hash_key = "exam_id"
   range_key = "question_id"
