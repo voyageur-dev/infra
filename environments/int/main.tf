@@ -189,6 +189,7 @@ module "rb_metadata_service" {
 
 module "rb_question_service" {
   source = "terraform-aws-modules/lambda/aws"
+  depends_on = [module.rb_questions_table]
 
   function_name = "rb-question-service-${var.environment}"
   handler       = "bootstrap"
@@ -214,6 +215,10 @@ module "rb_question_service" {
   policies = [
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
   ]
+
+  environment_variables = {
+    QUESTIONS_TABLE_NAME = module.rb_questions_table.dynamodb_table_id,
+  }
 
   timeout = 5
   memory_size = 128
@@ -384,6 +389,33 @@ module "rb_metadata_table" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 3
   write_capacity = 3
+
+  tags = {
+    Environment = var.environment
+  }
+}
+
+module "rb_questions_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "rb-questions-table-${var.environment}"
+  hash_key = "providerExamKey"
+  range_key = "questionId"
+
+  attributes = [
+    {
+      name = "providerExamKey"
+      type = "S"
+    },
+    {
+      name = "questionId"
+      type = "N"
+    }
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
 
   tags = {
     Environment = var.environment
