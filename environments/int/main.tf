@@ -409,7 +409,7 @@ module "rb_questions_table" {
     },
     {
       name = "questionId"
-      type = "N"
+      type = "S"
     }
   ]
 
