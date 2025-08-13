@@ -87,6 +87,7 @@ module "user_service" {
 
 module "rb_bookmark_service" {
   source = "terraform-aws-modules/lambda/aws"
+  depends_on = [module.rb_bookmarks_table]
 
   function_name = "rb-bookmark-service-${var.environment}"
   handler       = "bootstrap"
@@ -113,6 +114,9 @@ module "rb_bookmark_service" {
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
   ]
 
+  environment_variables = {
+    BOOKMARKS_TABLE_NAME = module.rb_bookmarks_table.dynamodb_table_id,
+  }
 
   timeout = 5
   memory_size = 128
@@ -336,6 +340,33 @@ module "rb_metadata_bucket" {
   }
 }
 
+
+module "rb_bookmarks_table" {
+  source   = "terraform-aws-modules/dynamodb-table/aws"
+
+  name     = "rb-bookmarks-table-${var.environment}"
+  hash_key = "userId"
+  range_key = "providerExamQuestionKey"
+
+  attributes = [
+    {
+      name = "userId"
+      type = "S"
+    },
+    {
+      name = "ProviderExamQuestionKey"
+      type = "S"
+    }
+  ]
+
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 3
+  write_capacity = 3
+
+  tags = {
+    Environment = var.environment
+  }
+}
 
 module "rb_metadata_table" {
   source   = "terraform-aws-modules/dynamodb-table/aws"
