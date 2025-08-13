@@ -354,7 +354,7 @@ module "rb_bookmarks_table" {
       type = "S"
     },
     {
-      name = "ProviderExamQuestionKey"
+      name = "providerExamQuestionKey"
       type = "S"
     }
   ]
