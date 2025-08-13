@@ -607,7 +607,7 @@ module "api_gateway" {
         timeout_milliseconds   = 8000
       }
     },
-    "DELETE /rb/bookmarks/{examId}/{questionId}" = {
+    "DELETE /rb/bookmarks/{providerId}/{examId}/{questionId}" = {
       authorizer_key = "cognito"
       authorization_type = "JWT"
       integration = {
