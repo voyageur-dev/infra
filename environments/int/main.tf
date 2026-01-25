@@ -152,7 +152,7 @@ module "rb_metadata_service" {
   }
 
   attach_policies = true
-  number_of_policies = 1
+  number_of_policies = 2
   policies = [
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
