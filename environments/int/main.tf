@@ -174,6 +174,7 @@ module "rb_metadata_service" {
   environment_variables = {
     METADATA_BUCKET_NAME = module.rb_metadata_bucket.s3_bucket_id,
     METADATA_FILE_KEY = "metadata.json"
+    METADATA_TABLE_NAME = module.rb_metadata_table.dynamodb_table_id,
     QUESTION_SERVICE_ARN = module.rb_question_service.lambda_function_arn
   }
 
